@@ -14,6 +14,11 @@
         android:orientation="vertical"
         android:gravity="center">
 
+        <com.twitter.sdk.android.core.identity.TwitterLoginButton
+            android:id="@+id/login_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
         <Button
             android:id="@+id/tweet_composer"
             android:layout_width="wrap_content"

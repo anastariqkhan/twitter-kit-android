@@ -31,6 +31,7 @@ import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.models.User;
 
 import static com.twitter.sdk.android.tweetcomposer.TweetUploadService.TWEET_COMPOSE_CANCEL;
+import static com.twitter.sdk.android.tweetcomposer.TweetUploadService.tweetCallback;
 
 class ComposerController {
     final ComposerView composerView;
@@ -40,14 +41,14 @@ class ComposerController {
     final DependencyProvider dependencyProvider;
 
     ComposerController(final ComposerView composerView, TwitterSession session, Uri imageUri,
-            String text, String hashtags, ComposerActivity.Finisher finisher) {
+                       String text, String hashtags, ComposerActivity.Finisher finisher) {
         this(composerView, session, imageUri, text, hashtags, finisher, new DependencyProvider());
     }
 
     // testing purposes
     ComposerController(final ComposerView composerView, TwitterSession session, Uri imageUri,
-            String text, String hashtags, ComposerActivity.Finisher finisher,
-            DependencyProvider dependencyProvider) {
+                       String text, String hashtags, ComposerActivity.Finisher finisher,
+                       DependencyProvider dependencyProvider) {
         this.composerView = composerView;
         this.session = session;
         this.imageUri = imageUri;
@@ -77,17 +78,17 @@ class ComposerController {
     void setProfilePhoto() {
         dependencyProvider.getApiClient(session).getAccountService()
                 .verifyCredentials(false, true, false).enqueue(new Callback<User>() {
-                    @Override
-                    public void success(Result<User> result) {
-                        composerView.setProfilePhotoView(result.data);
-                    }
+            @Override
+            public void success(Result<User> result) {
+                composerView.setProfilePhotoView(result.data);
+            }
 
-                    @Override
-                    public void failure(TwitterException exception) {
-                        // show placeholder background color
-                        composerView.setProfilePhotoView(null);
-                    }
-                });
+            @Override
+            public void failure(TwitterException exception) {
+                // show placeholder background color
+                composerView.setProfilePhotoView(null);
+            }
+        });
     }
 
     void setImageView(Uri imageUri) {
@@ -98,7 +99,9 @@ class ComposerController {
 
     interface ComposerCallbacks {
         void onTextChanged(String text);
+
         void onTweetPost(String text);
+
         void onCloseClick();
     }
 
@@ -151,6 +154,9 @@ class ComposerController {
         final Intent intent = new Intent(TWEET_COMPOSE_CANCEL);
         intent.setPackage(composerView.getContext().getPackageName());
         composerView.getContext().sendBroadcast(intent);
+        if (tweetCallback != null) {
+            tweetCallback.onCancel(intent);
+        }
     }
 
     static int remainingCharCount(int charCount) {

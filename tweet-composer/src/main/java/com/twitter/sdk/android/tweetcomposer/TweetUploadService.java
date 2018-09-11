@@ -54,7 +54,7 @@ public class TweetUploadService extends IntentService {
     private static final int PLACEHOLDER_ID = -1;
     private static final String PLACEHOLDER_SCREEN_NAME = "";
     DependencyProvider dependencyProvider;
-
+    static TweetCallback tweetCallback;
     Intent intent;
 
     public TweetUploadService() {
@@ -65,6 +65,10 @@ public class TweetUploadService extends IntentService {
     TweetUploadService(DependencyProvider dependencyProvider) {
         super("TweetUploadService");
         this.dependencyProvider = dependencyProvider;
+    }
+
+    public static void setTweetCallback(TweetCallback tweetCallback) {
+        TweetUploadService.tweetCallback = tweetCallback;
     }
 
     @Override
@@ -106,6 +110,9 @@ public class TweetUploadService extends IntentService {
                         new Callback<Tweet>() {
                             @Override
                             public void success(Result<Tweet> result) {
+                                if (tweetCallback != null) {
+                                    tweetCallback.onSuccess(result.data);
+                                }
                                 sendSuccessBroadcast(result.data.getId());
                                 stopSelf();
                             }
@@ -149,6 +156,9 @@ public class TweetUploadService extends IntentService {
         final Intent intent = new Intent(UPLOAD_FAILURE);
         intent.putExtra(EXTRA_RETRY_INTENT, original);
         intent.setPackage(getApplicationContext().getPackageName());
+        if (tweetCallback != null) {
+            tweetCallback.onFailure(intent);
+        }
         sendBroadcast(intent);
     }
 
@@ -160,5 +170,13 @@ public class TweetUploadService extends IntentService {
         TwitterApiClient getTwitterApiClient(TwitterSession session) {
             return TwitterCore.getInstance().getApiClient(session);
         }
+    }
+
+    public interface TweetCallback {
+        void onSuccess(Tweet tweet);
+
+        void onFailure(Intent failureIntent);
+
+        void onCancel(Intent cancelIntent);
     }
 }

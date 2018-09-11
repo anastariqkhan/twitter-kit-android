@@ -27,10 +27,17 @@ import android.widget.Button;
 
 import com.example.app.BaseActivity;
 import com.example.app.R;
+import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterCore;
+import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.identity.TwitterAuthClient;
+import com.twitter.sdk.android.core.identity.TwitterLoginButton;
+import com.twitter.sdk.android.core.models.Tweet;
 import com.twitter.sdk.android.tweetcomposer.ComposerActivity;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
+import com.twitter.sdk.android.tweetcomposer.TweetUploadService;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -39,6 +46,7 @@ public class TweetComposerMainActivity extends BaseActivity {
     private static final String TAG = "TweetComposer";
     private static final String IMAGE_TYPES = "image/*";
     private static final int IMAGE_PICKER_CODE = 141;
+    private TwitterLoginButton loginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,13 +57,49 @@ public class TweetComposerMainActivity extends BaseActivity {
             actionBar.setTitle(R.string.kit_tweetcomposer);
         }
 
+
+        loginButton = findViewById(R.id.login_button);
+        loginButton.setCallback(new Callback<TwitterSession>() {
+            @Override
+            public void success(Result<TwitterSession> result) {
+                // Do something with result, which provides a TwitterSession for making API calls
+                Log.e(TAG, "success: ");
+                launchComposer();
+            }
+
+            @Override
+            public void failure(TwitterException exception) {
+                // Do something on failure
+                Log.e(TAG, "failure: ");
+            }
+        });
+
+        TweetUploadService.setTweetCallback(new TweetUploadService.TweetCallback() {
+            @Override
+            public void onSuccess(Tweet tweet) {
+                Log.e(TAG, "onSuccess: " + tweet.text);
+            }
+
+            @Override
+            public void onFailure(Intent failureIntent) {
+                Log.e(TAG, "onFailure: ");
+
+            }
+
+            @Override
+            public void onCancel(Intent cancelIntent) {
+                Log.e(TAG, "onCancel: ");
+            }
+        });
+
         final Button tweetComposer = findViewById(R.id.tweet_composer);
         tweetComposer.setOnClickListener(view -> {
             try {
+
+
                 new TweetComposer.Builder(TweetComposerMainActivity.this)
                         .text("Tweet from TwitterKit!")
-                        .url(new URL("http://www.twitter.com"))
-                        .show();
+                        .url(new URL("http://www.twitter.com")).show();
 
             } catch (MalformedURLException e) {
                 Log.e(TAG, "error creating tweet intent", e);
@@ -63,7 +107,23 @@ public class TweetComposerMainActivity extends BaseActivity {
         });
 
         final Button organicComposer = findViewById(R.id.organic_composer);
-        organicComposer.setOnClickListener(view -> launchPicker());
+        organicComposer.setOnClickListener(view ->
+                {
+                    TwitterAuthClient authClient = new TwitterAuthClient();
+                    authClient.authorize(this, new Callback<TwitterSession>() {
+                        @Override
+                        public void success(Result<TwitterSession> result) {
+                            launchComposer();
+                        }
+
+                        @Override
+                        public void failure(TwitterException exception) {
+
+                        }
+                    });
+                }
+
+        );
     }
 
     void launchPicker() {
@@ -78,6 +138,9 @@ public class TweetComposerMainActivity extends BaseActivity {
         if (requestCode == IMAGE_PICKER_CODE && resultCode == Activity.RESULT_OK) {
             launchComposer(data.getData());
         }
+
+        // Pass the activity result to the login button.
+        loginButton.onActivityResult(requestCode, resultCode, data);
     }
 
     void launchComposer(Uri uri) {
@@ -86,6 +149,17 @@ public class TweetComposerMainActivity extends BaseActivity {
         final Intent intent = new ComposerActivity.Builder(TweetComposerMainActivity.this)
                 .session(session)
                 .image(uri)
+                .text("Tweet from TwitterKit!")
+                .hashtags("#twitter")
+                .createIntent();
+        startActivity(intent);
+    }
+
+    void launchComposer() {
+        final TwitterSession session = TwitterCore.getInstance().getSessionManager()
+                .getActiveSession();
+        final Intent intent = new ComposerActivity.Builder(TweetComposerMainActivity.this)
+                .session(session)
                 .text("Tweet from TwitterKit!")
                 .hashtags("#twitter")
                 .createIntent();
