@@ -73,6 +73,7 @@ dependencies {
     implementation dependency.supportCoreV4
     implementation dependency.supportCompatV4
     implementation dependency.recyclerview
+    implementation dependency.junit
 
     androidTestImplementation dependency.retrofitMock
     androidTestImplementation dependency.mockito

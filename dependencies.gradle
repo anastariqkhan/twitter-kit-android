@@ -21,7 +21,7 @@ ext {
             // Sample App
             leakCanary                 : 'com.squareup.leakcanary:leakcanary-android:1.5.3',
             leakCanaryNoOp             : 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.3',
-            appCompat                  : 'com.android.support:appcompat-v7:26.1.0',
+            appCompat                  : 'com.android.support:appcompat-v7:27.1.1',
 
             // Tests
             spoon                      : 'com.squareup.spoon:spoon-client:1.3.2',
@@ -35,16 +35,16 @@ ext {
 
             // Other
             picasso                    : 'com.squareup.picasso:picasso:2.5.2',
-            supportCompatV4            : 'com.android.support:support-compat:26.1.0',
-            supportCoreV4              : 'com.android.support:support-core-ui:26.1.0',
+            supportCompatV4            : 'com.android.support:support-compat:27.1.1',
+            supportCoreV4              : 'com.android.support:support-core-ui:27.1.1',
             retrofit                   : 'com.squareup.retrofit2:retrofit:2.3.0',
             retrofitMock               : 'com.squareup.retrofit2:retrofit-mock:2.3.0',
             retrofitGsonConverter      : 'com.squareup.retrofit2:converter-gson:2.3.0',
             gson                       : 'com.google.code.gson:gson:2.7',
             okHttp                     : 'com.squareup.okhttp3:okhttp:3.8.0',
             okHttpInterceptor          : 'com.squareup.okhttp3:logging-interceptor:3.8.0',
-            design                     : 'com.android.support:design:26.1.0',
+            design                     : 'com.android.support:design:27.1.1',
             tweetText                  : 'com.twitter:twitter-text:1.14.7',
-            recyclerview               : 'com.android.support:recyclerview-v7:26.1.0'
+            recyclerview               : 'com.android.support:recyclerview-v7:27.1.1'
     ]
 }
