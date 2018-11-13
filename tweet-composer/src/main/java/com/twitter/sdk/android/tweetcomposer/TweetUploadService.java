@@ -53,8 +53,8 @@ public class TweetUploadService extends IntentService {
     static final String EXTRA_IMAGE_URI = "EXTRA_IMAGE_URI";
     private static final int PLACEHOLDER_ID = -1;
     private static final String PLACEHOLDER_SCREEN_NAME = "";
-    DependencyProvider dependencyProvider;
     static TweetCallback tweetCallback;
+    DependencyProvider dependencyProvider;
     Intent intent;
 
     public TweetUploadService() {
@@ -140,7 +140,7 @@ public class TweetUploadService extends IntentService {
     }
 
     void fail(TwitterException e) {
-        sendFailureBroadcast(intent);
+        sendFailureBroadcast(intent, e);
         Twitter.getLogger().e(TAG, "Post Tweet failed", e);
         stopSelf();
     }
@@ -152,14 +152,22 @@ public class TweetUploadService extends IntentService {
         sendBroadcast(intent);
     }
 
-    void sendFailureBroadcast(Intent original) {
+    void sendFailureBroadcast(Intent original, TwitterException e) {
         final Intent intent = new Intent(UPLOAD_FAILURE);
         intent.putExtra(EXTRA_RETRY_INTENT, original);
         intent.setPackage(getApplicationContext().getPackageName());
         if (tweetCallback != null) {
-            tweetCallback.onFailure(intent);
+            tweetCallback.onFailure(intent, e);
         }
         sendBroadcast(intent);
+    }
+
+    public interface TweetCallback {
+        void onSuccess(Tweet tweet);
+
+        void onFailure(Intent failureIntent, TwitterException e);
+
+        void onCancel(Intent cancelIntent);
     }
 
     /*
@@ -170,13 +178,5 @@ public class TweetUploadService extends IntentService {
         TwitterApiClient getTwitterApiClient(TwitterSession session) {
             return TwitterCore.getInstance().getApiClient(session);
         }
-    }
-
-    public interface TweetCallback {
-        void onSuccess(Tweet tweet);
-
-        void onFailure(Intent failureIntent);
-
-        void onCancel(Intent cancelIntent);
     }
 }

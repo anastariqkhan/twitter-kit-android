@@ -162,7 +162,7 @@ public class TweetUploadServiceTest {
     public void testSendFailureBroadcast() {
         final Intent mockIntent = mock(Intent.class);
         final ArgumentCaptor<Intent> intentCaptor = ArgumentCaptor.forClass(Intent.class);
-        service.sendFailureBroadcast(mockIntent);
+        service.sendFailureBroadcast(mockIntent, new TwitterException("test message"));
         verify(service).sendBroadcast(intentCaptor.capture());
 
         final Intent capturedIntent = intentCaptor.getValue();
