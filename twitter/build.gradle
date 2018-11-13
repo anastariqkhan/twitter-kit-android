@@ -36,12 +36,15 @@ android {
             buildConfigField "String", "GROUP", "\"${pom_group_id}\""
             buildConfigField "String", "ARTIFACT_ID", "\"${pom_artifact_id}\""
             buildConfigField "String", "BUILD_NUMBER", "\"${buildNumber}\""
+            minifyEnabled false
         }
 
         release {
             buildConfigField "String", "GROUP", "\"${pom_group_id}\""
             buildConfigField "String", "ARTIFACT_ID", "\"${pom_artifact_id}\""
             buildConfigField "String", "BUILD_NUMBER", "\"${buildNumber}\""
+
+            minifyEnabled false
         }
     }
 

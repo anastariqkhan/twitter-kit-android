@@ -44,6 +44,7 @@ android {
             resValue "bool", "com.twitter.sdk.android.TRACE_ENABLED", "true"
             resValue "bool", "com.twitter.sdk.android.COLLECT_IDENTIFIERS_ENABLED", "true"
             buildConfigField "String", "MOPUB_AD_UNIT_ID", "\"${props.getProperty("mopubAdUnitId")}\""
+            minifyEnabled false
         }
         release {
             resValue "string", "com.twitter.sdk.android.CONSUMER_KEY", "\"${props.getProperty("twitterConsumerKey")}\""
@@ -51,7 +52,7 @@ android {
             resValue "bool", "com.twitter.sdk.android.TRACE_ENABLED", "false"
             resValue "bool", "com.twitter.sdk.android.COLLECT_IDENTIFIERS_ENABLED", "true"
             buildConfigField "String", "MOPUB_AD_UNIT_ID", "\"${props.getProperty("mopubAdUnitId")}\""
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt')
         }
     }

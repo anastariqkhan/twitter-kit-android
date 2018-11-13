@@ -44,6 +44,8 @@ android {
             buildConfigField "long", "BUILD_TIME", "${System.currentTimeMillis()}L"
 
             testCoverageEnabled enableTestCodeCoverage
+
+            minifyEnabled false
         }
 
         release {
@@ -51,6 +53,8 @@ android {
             buildConfigField "String", "ARTIFACT_ID", "\"${pom_artifact_id}\""
             buildConfigField "String", "BUILD_NUMBER", "\"${buildNumber}\""
             buildConfigField "long", "BUILD_TIME", "${System.currentTimeMillis()}L"
+
+            minifyEnabled false
         }
     }
 
