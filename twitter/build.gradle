@@ -19,7 +19,7 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
-    buildToolsVersion '28.0.3'
+    buildToolsVersion rootProject.buildToolsVersion
 
     defaultConfig {
         versionCode 1
