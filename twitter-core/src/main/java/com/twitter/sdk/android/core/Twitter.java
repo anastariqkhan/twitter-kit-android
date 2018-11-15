@@ -19,6 +19,7 @@ package com.twitter.sdk.android.core;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.net.Credentials;
 
 import com.twitter.sdk.android.core.internal.ActivityLifecycleManager;
 import com.twitter.sdk.android.core.internal.CommonUtils;
@@ -99,6 +100,27 @@ public class Twitter {
     public static void initialize(Context context) {
         final TwitterConfig config = new TwitterConfig
                 .Builder(context)
+                .build();
+        createTwitter(config);
+    }
+
+    /**
+     * Entry point to initialize the TwitterKit SDK.
+     * <p>
+     * Only the Application context is retained.
+     * See http://developer.android.com/resources/articles/avoiding-memory-leaks.html
+     * <p>
+     * Should be called from {@code OnCreate()} method of custom {@code Application} class.
+     *
+     *
+     * @param context Android context used for initialization
+     * @param authConfig TwitterAuthConfig used for initialization
+     *
+     */
+    public static void initialize(Context context, TwitterAuthConfig authConfig ) {
+        final TwitterConfig config = new TwitterConfig
+                .Builder(context)
+                .twitterAuthConfig(authConfig)
                 .build();
         createTwitter(config);
     }
